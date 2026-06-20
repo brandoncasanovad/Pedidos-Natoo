@@ -290,17 +290,19 @@ function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function fechaES(iso){const d=new Date(iso);return d.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'})+' · '+d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
 
 function initConexion(){
-  const url=localStorage.getItem('sb_url'),key=localStorage.getItem('sb_key');
+  const url=localStorage.getItem('natoo_sb_url'),key=localStorage.getItem('natoo_sb_key');
   if(url&&key){sb=supabase.createClient(url,key);$('cfg-url').value=url;$('cfg-key').value=key;$('cfg-estado').textContent='✅ Conectado a '+url;cargarTodo()}
   else{$('overlay-conexion').classList.add('show')}
 }
 function conectar(url,key){
   if(!url||!key){toast('Completa URL y clave',true);return}
-  localStorage.setItem('sb_url',url.trim());localStorage.setItem('sb_key',key.trim());
-  sb=supabase.createClient(url.trim(),key.trim());
+  url=url.trim().replace(/\/rest\/v1\/?$/,'').replace(/\/+$/,'');
+  key=key.trim();
+  localStorage.setItem('natoo_sb_url',url);localStorage.setItem('natoo_sb_key',key);
+  sb=supabase.createClient(url,key);
   $('overlay-conexion').classList.remove('show');
-  $('cfg-url').value=url.trim();$('cfg-key').value=key.trim();
-  $('cfg-estado').textContent='✅ Conectado a '+url.trim();
+  $('cfg-url').value=url;$('cfg-key').value=key;
+  $('cfg-estado').textContent='✅ Conectado a '+url;
   toast('Conectado correctamente');cargarTodo();
 }
 function conectarDesdeModal(){conectar($('m-url').value,$('m-key').value)}
@@ -801,5 +803,3 @@ initConexion();
 </script>
 </body>
 </html>
-
-
